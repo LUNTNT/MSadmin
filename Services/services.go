@@ -26,10 +26,7 @@ func GetReplyFolderByName(c *fiber.Ctx) error {
 		})
 	}
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"success": true,
-		"data":    reply,
-	})
+	return c.Status(fiber.StatusOK).JSON(reply)
 }
 
 func GetAllReplyFolder(c *fiber.Ctx) error {
@@ -56,10 +53,7 @@ func GetAllReplyFolder(c *fiber.Ctx) error {
 
 	defer cursor.Close(context.TODO())
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"success": true,
-		"data":    replies,
-	})
+	return c.Status(fiber.StatusOK).JSON(replies)
 }
 
 func CreateReply(c *fiber.Ctx) error {

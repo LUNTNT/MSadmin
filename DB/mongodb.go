@@ -19,8 +19,8 @@ type DB struct {
 }
 
 type MongoInstance struct {
-	Client *mongo.Client
-	DBCol  *mongo.Collection
+	RpyClient *mongo.Client
+	RpyDBCol  *mongo.Collection
 }
 
 var MI MongoInstance
@@ -44,7 +44,7 @@ func MongoConnect() {
 
 	fmt.Println("DB connected!")
 	MI = MongoInstance{
-		Client: client,
-		DBCol:  logs,
+		RpyClient: client,
+		RpyDBCol:  logs,
 	}
 }

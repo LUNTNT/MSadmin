@@ -1,21 +1,22 @@
 package Services
 
 import (
+	"context"
+	"github.com/rs/xid"
 	"admin/DB"
 	"admin/Model"
-	"context"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func GetReplyFolderByName(c *fiber.Ctx) error {
-	adminColl := DB.MI.DBCol
+func GetReplyFolderByID(c *fiber.Ctx) error {
+	adminColl := DB.MI.RpyDBCol
 
-	paramName := c.Params("name")
+	paramID := c.Params("id")
 
 	reply := &Model.StandardReply{}
-	filter := bson.D{{Key : "name", Value : paramName}}
+	filter := bson.D{{Key : "id", Value : paramID}}
 
 	err := adminColl.FindOne(c.Context(), filter).Decode(reply)
 	if err != nil {
@@ -30,7 +31,7 @@ func GetReplyFolderByName(c *fiber.Ctx) error {
 }
 
 func GetAllReplyFolder(c *fiber.Ctx) error {
-	adminColl := DB.MI.DBCol
+	adminColl := DB.MI.RpyDBCol
 
 	cursor, err := adminColl.Find(c.Context(), bson.D{{}})
 	if err != nil {
@@ -57,7 +58,7 @@ func GetAllReplyFolder(c *fiber.Ctx) error {
 }
 
 func CreateReply(c *fiber.Ctx) error {
-	adminColl := DB.MI.DBCol
+	adminColl := DB.MI.RpyDBCol
 
 	reply := new(Model.StandardReply)
 
@@ -69,6 +70,9 @@ func CreateReply(c *fiber.Ctx) error {
 			"error":   err,
 		})
 	}
+
+	id := xid.New()
+	reply.ID = id.String()
 
 	sameNameFilter := bson.D{{Key: "name", Value: reply.Name}}
 	count, err := adminColl.CountDocuments(c.Context(), sameNameFilter)
@@ -103,7 +107,7 @@ func CreateReply(c *fiber.Ctx) error {
 }
 
 func UpdateReply(c *fiber.Ctx) error {
-	adminColl := DB.MI.DBCol
+	adminColl := DB.MI.RpyDBCol
 
 	reply := new(Model.StandardReply)
 
@@ -116,7 +120,7 @@ func UpdateReply(c *fiber.Ctx) error {
 		})
 	}
 
-	target := bson.D{{Key: "name", Value: reply.Name}}
+	target := bson.D{{Key: "id", Value: reply.ID}}
 	update := bson.D{{"$set", reply}}
 
 	result, err := adminColl.UpdateOne(c.Context(), target, update)
@@ -128,10 +132,10 @@ func UpdateReply(c *fiber.Ctx) error {
 		})
 	}
 
-	checkReply := &Model.StandardReply{}
+	checkReply := new(Model.StandardReply)
 	checkFilter := bson.D{{Key: "_id", Value: result.UpsertedID}}
 
-	adminColl.FindOne(c.Context(), checkFilter).Decode(checkReply)
+	adminColl.FindOne(c.Context(), checkFilter).Decode(&checkReply)
 
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
 		"success": true,
@@ -142,10 +146,10 @@ func UpdateReply(c *fiber.Ctx) error {
 }
 
 func DeleteReply(c *fiber.Ctx) error {
-	adminColl := DB.MI.DBCol
+	adminColl := DB.MI.RpyDBCol
 
-	paramName := c.Params("name")
-	filter := bson.D{{Key : "name", Value : paramName}}
+	paramID := c.Params("id")
+	filter := bson.D{{Key : "id", Value : paramID}}
 
 	result, err := adminColl.DeleteOne(c.Context(), filter)
 	if err != nil {

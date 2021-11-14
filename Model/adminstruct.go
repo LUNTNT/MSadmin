@@ -1,6 +1,7 @@
 package Model
 
 type StandardReply struct {
+	ID			string `json:"id" bson:"id"`
 	Name 		string `json:"name" bson:"name"`
 	Content		[]string `json:"content" bson:"content"`
 	Channel 	[]string `json:"channel" bson:"channel"`

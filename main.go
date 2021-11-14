@@ -19,7 +19,7 @@ func main() {
 
 	api := app.Group("/api")
 
-	Router.CustomersRoute(api.Group("/admin/reply"))
+	Router.CustomersRoute(api.Group("/admin"))
 
 	app.Listen(":3002")
 

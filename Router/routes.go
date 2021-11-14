@@ -7,15 +7,15 @@ import (
 )
 
 func CustomersRoute(route fiber.Router) {
-	//Standard Reply Folder
 
-	route.Get("/name/:name", Services.GetReplyFolderByName)
-	route.Get("/all", Services.GetAllReplyFolder)
+	//Standard Reply
+	route.Get("/getReplyByID/:id", Services.GetReplyFolderByID)
+	route.Get("/getAllReply", Services.GetAllReplyFolder)
 
-	route.Post("/create", Services.CreateReply)
+	route.Post("/createReply", Services.CreateReply)
 
-	route.Put("/update", Services.UpdateReply)
+	route.Put("/updateReply", Services.UpdateReply)
 
-	route.Delete("/delete/:name", Services.DeleteReply)
+	route.Delete("/deleteReply/:id", Services.DeleteReply)
 
 }
